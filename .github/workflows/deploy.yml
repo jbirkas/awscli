@@ -1,0 +1,30 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch-name:
+        description: 'Name of the branch to be deployed'
+        required: true
+      deploy-secret-source:
+        type: environment
+        description: 'The environment where it should be deployed'
+
+# Allow one concurrent deployment
+concurrency:
+  group: "deploy"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    environment: ${{ github.event.inputs.deploy-secret-source }}
+    env:
+      PROJECT_NAME: ${{ github.event.repository.name }}
+      AWS_REGION: eu-central-1
+    steps:
+      - name: Print the branch-name
+        run: echo The branch is ${{ inputs.branch-name }}
