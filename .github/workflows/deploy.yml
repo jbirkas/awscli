@@ -33,4 +33,6 @@ jobs:
       AWS_REGION: eu-central-1
     steps:
       - name: Print the branch-name
-        run: echo The branch is ${{ inputs.branch-name }}
+        run: echo The branch is ${{ inputs.environment }}
+      - name: Print branch
+        run: echo running on branch ${GITHUB_REF##*/}
