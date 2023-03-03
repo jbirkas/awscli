@@ -6,6 +6,12 @@ on:
       branch-name:
         description: 'Name of the branch to be deployed'
         required: true
+        type: choice
+        default: dev
+        options:
+          - dev
+          - qa
+          - prod
       deploy-secret-source:
         type: environment
         description: 'The environment where it should be deployed'
