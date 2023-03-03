@@ -3,15 +3,6 @@ name: Deploy
 on:
   workflow_dispatch:
     inputs:
-      branch-name:
-        description: 'Name of the branch to be deployed'
-        required: true
-        type: choice
-        default: dev
-        options:
-          - dev
-          - qa
-          - prod
       deploy-secret-source:
         type: environment
         description: 'The environment where it should be deployed'
@@ -32,7 +23,14 @@ jobs:
       PROJECT_NAME: ${{ github.event.repository.name }}
       AWS_REGION: eu-central-1
     steps:
-      - name: Print the branch-name
-        run: echo The branch is ${{ inputs.environment }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_IAMROLE }}
+          role-duration-seconds: 3600
+          role-session-name: DeployUserService
       - name: Print branch
         run: echo running on branch ${GITHUB_REF##*/}
+      - name: Install kubectl
+        run: aws eks describe-cluster --name easylot-qa --query cluster.version
